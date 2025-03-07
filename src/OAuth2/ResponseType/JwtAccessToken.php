@@ -26,7 +26,7 @@ class JwtAccessToken extends AccessToken
      *                                                        or just the token ID is stored
      * @param EncryptionInterface         $encryptionUtil   -
      */
-    public function __construct(PublicKeyInterface $publicKeyStorage = null, AccessTokenStorageInterface $tokenStorage = null, RefreshTokenInterface $refreshStorage = null, array $config = array(), EncryptionInterface $encryptionUtil = null)
+    public function __construct(?PublicKeyInterface $publicKeyStorage = null, ?AccessTokenStorageInterface $tokenStorage = null, ?RefreshTokenInterface $refreshStorage = null, array $config = array(), ?EncryptionInterface $encryptionUtil = null)
     {
         $this->publicKeyStorage = $publicKeyStorage;
         $config = array_merge(array(
@@ -139,21 +139,21 @@ class JwtAccessToken extends AccessToken
             'token_type' => $this->config['token_type'],
             'scope'      => $scope
         );
-        
+
         if (isset($this->config['jwt_extra_payload_callable'])) {
             if (!is_callable($this->config['jwt_extra_payload_callable'])) {
                 throw new \InvalidArgumentException('jwt_extra_payload_callable is not callable');
             }
-            
+
             $extra = call_user_func($this->config['jwt_extra_payload_callable'], $client_id, $user_id, $scope);
-            
+
             if (!is_array($extra)) {
                 throw new \InvalidArgumentException('jwt_extra_payload_callable must return array');
             }
-            
+
             $payload = array_merge($extra, $payload);
         }
-        
+
         return $payload;
     }
 }
